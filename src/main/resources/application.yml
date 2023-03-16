@@ -1,0 +1,5 @@
+micronaut:
+  http:
+    services:
+      pokegql:
+        url: 'https://beta.pokeapi.co'
