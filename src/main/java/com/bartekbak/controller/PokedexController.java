@@ -20,4 +20,9 @@ public class PokedexController {
         return pokeGQLClient.getAll();
     }
 
+    @Get("/pokemon/{id}")
+    Mono<PokemonResponseData> getPokemonById(int id) {
+        return pokeGQLClient.getPokemonById(id);
+    }
+
 }
