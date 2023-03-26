@@ -33,6 +33,18 @@ public class PokeGQLClient {
         return Mono.from(httpClient.retrieve(request, Argument.of(PokemonResponseData.class)));
     }
 
+    public Mono<PokemonResponseData> getPokemonById(int id) {
+
+        String query = "{\"query\":\"query Query_root($where: pokemon_v2_pokemon_bool_exp) {pokemon_v2_pokemon(where: $where) {id,name}}\",\n";
+        String variables = String.format("\"variables\":{\"where\":{\"id\":{\"_eq\":%d}}},%n", id);
+        String operationName = "\"operationName\":\"Query_root\"}";
+
+        String fullQuery = query + variables + operationName;
+
+        HttpRequest<String> request = getRequest(fullQuery);
+        return Mono.from(httpClient.retrieve(request, Argument.of(PokemonResponseData.class)));
+    }
+
     private HttpRequest<String> getRequest(String query) {
         URI uri = UriBuilder.of("/graphql/v1beta")
                 .build();
@@ -41,5 +53,4 @@ public class PokeGQLClient {
                 .header(USER_AGENT, "Micronaut HTTP Client")
                 .header(ACCEPT, "application/json");
     }
-
 }
