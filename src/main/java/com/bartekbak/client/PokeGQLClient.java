@@ -1,5 +1,6 @@
 package com.bartekbak.client;
 
+import com.bartekbak.model.PokemonDetailedResponseData;
 import com.bartekbak.model.PokemonResponseData;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
@@ -43,6 +44,19 @@ public class PokeGQLClient {
 
         HttpRequest<String> request = getRequest(fullQuery);
         return Mono.from(httpClient.retrieve(request, Argument.of(PokemonResponseData.class)));
+    }
+
+    public Mono<PokemonDetailedResponseData> getDetailedPokemonByName(String name) {
+        String abilities = "pokemon_v2_pokemonabilities {pokemon_v2_ability {name}}";
+        String fields = String.format("{id,name,weight,%s}", abilities);
+        String query = String.format("{\"query\":\"query Query_root($where: pokemon_v2_pokemon_bool_exp) {pokemon_v2_pokemon(where: $where) %s}\",%n", fields);
+        String variables = String.format("\"variables\":{\"where\":{\"name\":{\"_eq\":\"%s\"}}},%n", name);
+        String operationName = "\"operationName\":\"Query_root\"}";
+
+        String fullQuery = query + variables + operationName;
+
+        HttpRequest<String> request = getRequest(fullQuery);
+        return Mono.from(httpClient.retrieve(request, Argument.of(PokemonDetailedResponseData.class)));
     }
 
     private HttpRequest<String> getRequest(String query) {

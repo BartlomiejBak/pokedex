@@ -32,6 +32,13 @@ class PokedexControllerTest extends Specification {
         1 * pokeGQLClient.getPokemonById(1)
     }
 
+    def "should invoke getDetailedPokemonByName() method"() {
+        when: "we invoke getDetailedPokemonByName() method"
+        pokedexController.getDetailedPokemonByName("name")
+
+        then: "clients getDetailedPokemonByName() method should be invoked"
+        1 * pokeGQLClient.getDetailedPokemonByName("name")
+    }
 
 
 }
